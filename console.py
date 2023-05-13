@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import cmd
+import sys
 import re
 import models
 import subprocess
@@ -25,8 +26,6 @@ class HBNBCommand(cmd.Cmd):
 
     prompt = "(hbnb) "
 
-    last_output = ''
-
     class_list = ['BaseModel', 'User', 'Place', 'State', 'City',
                   'Amenity', 'Review']
 
@@ -37,35 +36,16 @@ class HBNBCommand(cmd.Cmd):
         """Quit command to exit the program"""
         return True
 
-    def help_quit(self):
-        print('\n'.join([
-              'Quit command to exit the program\n',
-              ]))
+    def do_EOF(self, line):
+        """Quit command to exit the program"""
+        return True
 
     def emptyline(self):
         """Doesn't execute anything"""
         pass
 
-    def do_EOF(self, line):
-        """Quit command to exit the program"""
-        return True
-
-    def A_shell(self, line):
-        """Run shell command"""
-        sub_cmd = subprocess.Popen(line,
-                                   shell=True,
-                                   stdout=subprocess.PIPE)
-        ouput = sub_cmd.communicate()[0].decode('utf-8')
-        print(output)
-        self.last_output = output
-
-    def an_echo(self, line):
-        """implements echo in non interactive mode"""
-        print(line.replace('$out', self.last_output))
-
     def do_create(self, line):
         """creates a new instance of BaseModel, saves it
-
         to JSON file, and prints the id.
         """
         if not line:
@@ -79,7 +59,6 @@ class HBNBCommand(cmd.Cmd):
 
     def do_show(self, arg):
         """Prints the string representation of all instance
-
         based or not on the class name and id.
         """
         args = shlex.split(arg)
@@ -100,7 +79,6 @@ class HBNBCommand(cmd.Cmd):
 
     def do_destroy(self, arg):
         """Deletes an instance based on the class name and id.
-
         Saves the changes to JSON file.
         """
         args = shlex.split(arg)
@@ -122,7 +100,6 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, line):
         """Prints the string representation of all instances based or
-
         not on the class name.Printed result is a list of strings.
         """
 
@@ -146,7 +123,6 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, line):
         """Updates an instance based on the class name by adding
-
         or updating attribute, and saves changes to JSON file
         """
         if not line:
@@ -188,7 +164,10 @@ class HBNBCommand(cmd.Cmd):
                 storage.all()[key].save()
 
     def precmd(self, args):
-        """implements string format for some commands"""
+        """method to override some functions"""
+        if not sys.stdin.isatty():
+            print()
+
         if len(args) >= 2:
             for arg in args:
                 if "." in args:
@@ -198,36 +177,42 @@ class HBNBCommand(cmd.Cmd):
                     args = f"{args[1]} {args[0]}"
                 return cmd.Cmd.precmd(self, args)
 
-        elif len(args) > 2:
-            args = shlex.split(arg)
-            for arg in args:
-                if args:
-                    args = re.match(r'^(\w+)\.(\w+)\(:?.*\)$', args)
-                    args = f"{command} {class_list}"
-        return (args)
+        if len(args) > 2:
+            same_line = line
+            args = line.split(' ')
+            if not line:
+                print("** class name missing **")
+
+            key = "{}.{}".format(args[0], args[1])
+            if args[0] not in classes:
+                print("** class doesn't exist **")
+            elif len(args) == 1:
+                print("** instance id missing **")
+            elif key not in storage.all().keys():
+                print("** no instance found **")
+            else:
+                args = re.match(r'^(\w+)\.(\w+)\(:?.*\)$', args)
+                args = args.split(' ')
+                args = f"{args[1]} {args[0]}"
+
+        print(args)
         return cmd.Cmd.precmd(self, args)
 
-    def get(self, cls, id):
-        """gets the class list value"""
-        if cls not in class_list.values():
-            return None
+    def do_count(self, line):
+        """Counts the number of instances of a class"""
+        same_line = line
+        args = line.split(' ')
+        if not line:
+            print("** class name missing **")
 
-        al_cls = models.storage.all(cls)
-        for value in al_cls.values():
-            if(value.id == id):
-                return value
-        return None
-
-    def count(self, cls=None):
-        """counts the number of instances for classes"""
-        all_class = class_list.values()
-        if not cls:
-            count = 0
-            for clas in all_class:
-                count += len(models.storage.all(clas).values())
+            key = "{}.{}".format(args[0], args[1])
+        elif args[0] not in HBNBCommand.class_list:
+            print("** class doesnt exist **")
         else:
-            count = len(models.storage.all(cls).values())
-        return count
+            match = [
+                k for k in storage.all() if k.startswith(args[0]
+                                                         + '.')]
+            print(len(match))
 
 
 if __name__ == '__main__':
