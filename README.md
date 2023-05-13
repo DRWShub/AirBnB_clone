@@ -13,7 +13,8 @@ prompt appears:
 (hbnb)
 type command to get desired output. Ex.
 (hbnb) help
-Documented commans (type help <topic>):
+##
+Documented commands (type help <topic>):
 =====================================
 EOF   all   create   destroy   help   quit   show   update
 (hbnb) create BaseModel
