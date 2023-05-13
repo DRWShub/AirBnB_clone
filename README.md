@@ -8,7 +8,7 @@ Using pycodostyle (ver 2.8.*)
 ## Usage
 ### Interactive mode
 To execute the program we run the console:
-....$ ./console.py
+....$ ./console.py,
 prompt appears:
 (hbnb)
 type command to get desired output. Ex.
