@@ -6,7 +6,7 @@ from unittest.mock import create_autospec
 # import sys module
 import sys
 #tell interpreter where to look
-sys.path.insert(1,"..")
+sys.path.insert(0,"..")
 
 #HBNBCommand = console.HBNBCommand
 from console import HBNBCommand
