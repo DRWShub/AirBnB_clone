@@ -1,6 +1,6 @@
 # AirBnB Clone
 ## Description of the Project
-This is a succesfully cloning a replica version of the [AirBnB]-(https://www.airbnb.com) using python3. The site handle rentals and reservations. It's entity framework and core classes is made up of Users, Place, State, City, Amenity and Review which inherits from a BaseModel. This was possible possible with the help of python cmd class method. Files were parsed and saved using the json class method, making the code interoperable. 
+This is successfully cloning a replica version of the [AirBnB]-(https://www.airbnb.com) using python3. The site handle rentals and reservations. It's entity framework and core classes is made up of Users, Place, State, City, Amenity and Review which inherits from a BaseModel. This was possible possible with the help of python cmd class method. Files were parsed and saved using the json class method, making the code interoperable. 
 ## Requirements
 Allowed editors, vi, vim, emacs
 Files are executable
