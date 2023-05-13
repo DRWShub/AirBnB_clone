@@ -33,8 +33,25 @@ class HBNBCommand(cmd.Cmd):
     classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
                "Place": Place, "Review": Review, "State": State, "User": User}
 
+    def do_quit(self, line):
+        """Quit command to exit the program"""
+        return True
+
+    def help_quit(self):
+        print('\n'.join([
+              'Quit command to exit the program\n',
+              ]))
+
+    def emptyline(self):
+        """Doesn't execute anything"""
+        pass
+
+    def do_EOF(self, line):
+        """Quit command to exit the program"""
+        return True
+
     def A_shell(self, line):
-        "Run shell command"
+        """Run shell command"""
         sub_cmd = subprocess.Popen(line,
                                    shell=True,
                                    stdout=subprocess.PIPE)
@@ -43,25 +60,8 @@ class HBNBCommand(cmd.Cmd):
         self.last_output = output
 
     def an_echo(self, line):
+        """implements echo in non interactive mode"""
         print(line.replace('$out', self.last_output))
-
-    def can_quit(self):
-        return True
-
-    def onecmd(self, line):
-        r = super(HBNBCommand, self).onecmd(line)
-        if r and (self.can_quit()):
-            return True
-        return False
-
-    def do_quit(self, line):
-        "Quit command to exit the program"
-        return True
-
-    def help_quit(self):
-        print('\n'.join([
-              'Quit command to exit the program\n',
-              ]))
 
     def do_create(self, line):
         """creates a new instance of BaseModel, saves it
@@ -188,6 +188,7 @@ class HBNBCommand(cmd.Cmd):
                 storage.all()[key].save()
 
     def precmd(self, args):
+        """implements string format for some commands"""
         if len(args) >= 2:
             for arg in args:
                 if "." in args:
@@ -207,6 +208,7 @@ class HBNBCommand(cmd.Cmd):
         return cmd.Cmd.precmd(self, args)
 
     def get(self, cls, id):
+        """gets the class list value"""
         if cls not in class_list.values():
             return None
 
@@ -217,6 +219,7 @@ class HBNBCommand(cmd.Cmd):
         return None
 
     def count(self, cls=None):
+        """counts the number of instances for classes"""
         all_class = class_list.values()
         if not cls:
             count = 0
@@ -225,13 +228,6 @@ class HBNBCommand(cmd.Cmd):
         else:
             count = len(models.storage.all(cls).values())
         return count
-
-    def emptyline(self):
-        pass
-
-    def do_EOF(self, line):
-        "Quit command to exit the program"
-        return True
 
 
 if __name__ == '__main__':
