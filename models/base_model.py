@@ -8,7 +8,6 @@ time = "%Y-%m-%dT%H:%M:%S.%f"
 
 
 class BaseModel():
-
     """base model"""
     def __init__(self, *args, **kwargs):
         """initialization with args and kwargs"""
@@ -37,6 +36,7 @@ class BaseModel():
         storage.save()
 
     def to_dict(self):
+        """dictionary representation for basemodel"""
         new_dict = {}
         new_dict.update(self.__dict__)
         new_dict.update({'__class__': type(self).__name__})
