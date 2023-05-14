@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+"""Command line console"""
 import cmd
 import sys
 import re
@@ -23,6 +24,7 @@ class_list = ['BaseModel', 'User', 'Place', 'State', 'City',
 
 
 class HBNBCommand(cmd.Cmd):
+    """Class HBNBCommand for console"""
 
     prompt = "(hbnb) "
 
@@ -177,26 +179,41 @@ class HBNBCommand(cmd.Cmd):
                     args = f"{args[1]} {args[0]}"
                 return cmd.Cmd.precmd(self, args)
 
-        if len(args) > 2:
-            same_line = line
-            args = line.split(' ')
-            if not line:
+        pattern = r'^(\w+)\.(\w+)\("([\w\s]+)"\)$'
+        match = re.match(pattern, args)
+        if match:
+            command = match.group(2)
+            object_type = match.group(1)
+            argument = match.group(3)
+
+            if not object_type:
                 print("** class name missing **")
-
-            key = "{}.{}".format(args[0], args[1])
-            if args[0] not in classes:
+                return
+            if object_type not in HBNBCommand.class_list:
                 print("** class doesn't exist **")
-            elif len(args) == 1:
+                return
+            if not argument:
                 print("** instance id missing **")
-            elif key not in storage.all().keys():
-                print("** no instance found **")
-            else:
-                args = re.match(r'^(\w+)\.(\w+)\(:?.*\)$', args)
-                args = args.split(' ')
-                args = f"{args[1]} {args[0]}"
+                return
 
-        print(args)
-        return cmd.Cmd.precmd(self, args)
+                obj_class = HBNBCommand.class_list[object_type]
+                if obj_class == BaseModel or getattr(obj_class, '__module__',
+                                                     None) == models:
+                    obj = obj_class()
+                    obj_dict = obj.to_dict()
+                    if argument in obj_dict and objt_dict[argument]:
+                        argument = obj_dict[argument]
+                    else:
+                        print("** no instance found **")
+                        return
+                else:
+                    print(f"Object Type {object_type} is not supported.")
+                    return
+
+                output = f"{command}+{object_type}+{argument}"
+                print(output)
+                return
+        return args
 
     def do_count(self, line):
         """Counts the number of instances of a class"""
