@@ -7,11 +7,7 @@ from time import sleep
 import os
 from datetime import datetime
 from uuid import uuid4
-
-# import sys module
 import sys
-#tell interpreter where to look
-sys.path.insert(0,"..")
 import models
 from models.base_model import BaseModel
 
